@@ -1,0 +1,39 @@
+/**
+ * PDF packing invoice without VAt and with VAT
+ *
+ */
+
+add_filter( 'wpo_wcpdf_woocommerce_totals', 'wpo_wcpdf_woocommerce_totals_custom', 10, 2);
+function wpo_wcpdf_woocommerce_totals_custom( $totals, $order) {
+    
+    $totals = array();
+      
+        
+        $totals['order_shipping']    = array(
+            'label' => __('Shipping', 'alex-custom'),
+            'value' =>  wc_price( $order->get_shipping_total() + $order->get_shipping_tax(), array( 'currency' =>$order->get_order_currency() ) ),
+        );
+
+        $totals['price_without_vat'] = array(
+            'label' => __('Subtotal', 'alex-custom'),
+            'value' => wc_price( $order->get_subtotal(), array( 'currency' =>$order->get_order_currency() ) ),
+        );
+        
+        $totals['price_without_vat'] = array(
+            'label' => __('Price without VAT', 'alex-custom'),
+            'value' => wc_price( $order->get_total() - $order->get_total_tax(), array( 'currency' =>$order->get_order_currency() ) ),
+        );
+        $totals['total_tax'] = array(
+            'label' => __('Total tax', 'alex-custom'),
+            'value' => wc_price( $order->get_total_tax() - $order->get_total_tax_refunded(), array( 'currency' => $order->get_order_currency() ) ),
+        );
+
+        $totals['total_price']   = array(
+            'label' => __('Total price with VAT', 'alex-custom'),
+            'value' => wc_price( $order->get_total(), array( 'currency' => $order->get_order_currency() ) ),
+        );
+        // etc.
+    
+
+    return $totals;
+}
